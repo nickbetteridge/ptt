@@ -75,7 +75,8 @@ let fiber ~domain map =
     ; Ptt.SMTP.ipv4= Ipaddr.V4.any
     ; Ptt.SMTP.tls= Tls.Config.server
           ~certificates:(`Single ([ cert ], private_key))
-          ~authenticator:X509.Authenticator.null ()
+          ~authenticator:Ptt.Authentication.null ()
+    ; Ptt.SMTP.client_x509_authenticator=Ptt.Authentication.null
     ; Ptt.SMTP.zone= Mrmime.Date.Zone.GMT
     ; Ptt.SMTP.size= 0x1000000L } in
   let resolver = Dns_client_lwt.create ~clock:Mclock.elapsed_ns () in

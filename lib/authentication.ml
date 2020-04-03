@@ -43,3 +43,5 @@ type mechanism =
 
 let decode_authentication scheduler hash m t v = match m with
   | PLAIN stamp -> decode_plain_authentication scheduler hash ?stamp t v
+
+let null ~host:_ _ = Ok None

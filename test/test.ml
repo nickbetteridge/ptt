@@ -346,7 +346,7 @@ let private_key = Rresult.R.get_ok private_key
 
 let fake_tls_config = Tls.Config.server
     ~certificates:(`Single ([ cert ], private_key))
-    ~authenticator:X509.Authenticator.null ()
+    ~authenticator:Ptt.Authentication.null ()
 
 let smtp_test_0 =
   Alcotest.test_case "SMTP (relay) 0" `Quick @@ fun () ->
@@ -356,6 +356,7 @@ let smtp_test_0 =
     { Ptt.SSMTP.domain= x25519
     ; ipv4= Ipaddr.V4.localhost
     ; tls= fake_tls_config
+    ; client_x509_authenticator=Ptt.Authentication.null
     ; zone= Mrmime.Date.Zone.gmt
     ; size= 0L } in
   match run (Ptt.SSMTP.m_relay_init ctx info) rdwr () with
@@ -381,6 +382,7 @@ let smtp_test_1 =
     { Ptt.SSMTP.domain= x25519
     ; ipv4= Ipaddr.V4.localhost
     ; tls= fake_tls_config
+    ; client_x509_authenticator=Ptt.Authentication.null
     ; zone= Mrmime.Date.Zone.gmt
     ; size= 16777216L } in
   match run (Ptt.SSMTP.m_relay_init ctx info) rdwr () with
@@ -412,6 +414,7 @@ let smtp_test_2 =
     { Ptt.SSMTP.domain= x25519
     ; ipv4= Ipaddr.V4.localhost
     ; tls= fake_tls_config
+    ; client_x509_authenticator=Ptt.Authentication.null
     ; zone= Mrmime.Date.Zone.gmt
     ; size= 16777216L } in
   match run (Ptt.SSMTP.m_relay_init ctx info) rdwr () with
@@ -448,6 +451,7 @@ let smtp_test_3 =
     { Ptt.SSMTP.domain= x25519
     ; ipv4= Ipaddr.V4.localhost
     ; tls= fake_tls_config
+    ; client_x509_authenticator=Ptt.Authentication.null
     ; zone= Mrmime.Date.Zone.gmt
     ; size= 16777216L } in
   match run (Ptt.SSMTP.m_relay_init ctx info) rdwr () with
@@ -479,6 +483,7 @@ let smtp_test_4 =
     { Ptt.SSMTP.domain= x25519
     ; ipv4= Ipaddr.V4.localhost
     ; tls= fake_tls_config
+    ; client_x509_authenticator=Ptt.Authentication.null
     ; zone= Mrmime.Date.Zone.gmt
     ; size= 16777216L } in
   match run (Ptt.SSMTP.m_relay_init ctx info) rdwr () with
@@ -515,6 +520,7 @@ let smtp_test_5 =
     { Ptt.SSMTP.domain= x25519
     ; ipv4= Ipaddr.V4.localhost
     ; tls= fake_tls_config
+    ; client_x509_authenticator=Ptt.Authentication.null
     ; zone= Mrmime.Date.Zone.gmt
     ; size= 16777216L } in
   match run (Ptt.SSMTP.m_relay_init ctx info) rdwr () with
@@ -559,6 +565,7 @@ let smtp_test_6 =
     { Ptt.SSMTP.domain= x25519
     ; ipv4= Ipaddr.V4.localhost
     ; tls= fake_tls_config
+    ; client_x509_authenticator=Ptt.Authentication.null
     ; zone= Mrmime.Date.Zone.gmt
     ; size= 16777216L } in
   match run (Ptt.SSMTP.m_submission_init ctx info [ Ptt.Mechanism.PLAIN ]) rdwr () with
@@ -586,6 +593,7 @@ let smtp_test_7 =
     { Ptt.SSMTP.domain= x25519
     ; ipv4= Ipaddr.V4.localhost
     ; tls= fake_tls_config
+    ; client_x509_authenticator=Ptt.Authentication.null
     ; zone= Mrmime.Date.Zone.gmt
     ; size= 16777216L } in
   match run (Ptt.SSMTP.m_submission_init ctx info [ Ptt.Mechanism.PLAIN ]) rdwr () with
@@ -738,7 +746,7 @@ let sendmail ipv4 port ~domain sender recipients contents =
   let stream = stream_of_string_list contents in
   let stream = (function Some x -> Some (x ^"\r\n", 0, String.length x + 2) | None -> None) <.> stream in
   let stream = Unix_scheduler.inj <.> stream in
-  let tls_config = Tls.Config.client ~authenticator:X509.Authenticator.null () in
+  let tls_config = Tls.Config.client ~authenticator:Ptt.Authentication.null () in
   let ctx = Sendmail_with_tls.Context_with_tls.make () in
   let rdwr =
     { Colombe.Sigs.rd= (fun fd buf off len ->
@@ -777,6 +785,7 @@ let full_test_0 =
       ~info:{ Ptt.SMTP.domain= gmail
             ; ipv4= Ipaddr.V4.localhost
             ; tls= fake_tls_config
+            ; client_x509_authenticator=Ptt.Authentication.null
             ; zone= Mrmime.Date.Zone.GMT
             ; size= 0x1000000000L } ~port:8888 in
   let recoil = (Colombe.Domain.of_string_exn <.> Domain_name.to_string) recoil in
@@ -816,6 +825,7 @@ let full_test_1 =
       ~info:{ Ptt.SMTP.domain= gmail
             ; ipv4= Ipaddr.V4.localhost
             ; tls= fake_tls_config
+            ; client_x509_authenticator=Ptt.Authentication.null
             ; zone= Mrmime.Date.Zone.GMT
             ; size= 0x1000000000L } ~port:8888 in
   let recoil = (Colombe.Domain.of_string_exn <.> Domain_name.to_string) recoil in

@@ -73,7 +73,12 @@ module Make (StackV4 : Mirage_stack.V4) = struct
     : FLOW with type t = TCP.protocol
     = (val (flow (Tuyau_mirage.impl_of_flow TCP.protocol)))
 
-  let sendmail ~info ?(tls= Tls.Config.client ~authenticator:X509.Authenticator.null ()) stack mx_ipaddr emitter producer recipients =
+  let sendmail ~info ?tls stack mx_ipaddr emitter producer recipients =
+    let tls =
+      match tls with
+      | Some tls -> tls
+      | None -> let authenticator = info.Ptt.Logic.client_x509_authenticator in Tls.Config.client ~authenticator ()
+    in
     let endpoint =
       { Tuyau_mirage_tcp.stack= stack
       ; Tuyau_mirage_tcp.keepalive= None

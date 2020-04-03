@@ -22,6 +22,7 @@ module Make
     { domain : [ `host ] Domain_name.t
     ; ipv4 : Ipaddr.V4.t
     ; tls : Tls.Config.server
+    ; client_x509_authenticator : X509.Authenticator.t
     ; zone : Mrmime.Date.Zone.t
     ; size : int64 }
 

@@ -24,3 +24,6 @@ val decode_authentication
 (** [decode_authentication scheduler hash mechanism t payload] tries to decode [payload]
    according [mechanism] used. Then, it applies the {i authenticator} [t] with decoded value.
    [hash] is used as a {i witness} of which hash algorithm we want to use. *)
+
+val null: host:[`host] Domain_name.t option -> X509.Certificate.t list -> X509.Validation.r
+(** null authenticator for default tls client *)
